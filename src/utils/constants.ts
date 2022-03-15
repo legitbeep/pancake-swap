@@ -1,0 +1,1 @@
+import contractAbi from './abi.json';
