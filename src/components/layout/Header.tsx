@@ -5,12 +5,14 @@ import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
+  
   useEffect(() => {
     // @ts-ignore
     if (typeof window.ethereum === 'undefined') {
       alert('Please install metamask to continue!');
     }
-  },[window])
+  },[]);
+
   return(
     <Flex as="header" width="full" align="center">
       <Heading as="h1" size="md" display="flex">

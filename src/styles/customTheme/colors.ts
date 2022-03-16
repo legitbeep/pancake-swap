@@ -6,7 +6,7 @@ const extendedColors = {
         primary : "rgb(31, 199, 212)",
         prShadow : "rgba(31, 199, 212,0.75)",
         secondary : "rgb(162, 139, 212)",
-        srShadow : "rgba(162, 139, 212,0.75)",
+        srShadow : "rgba(162, 139, 212,0.5)",
       },
 }
 
