@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input, InputGroup, InputRightElement, Button } from "@chakra-ui/react";
 import {ChangeEventHandler} from 'react';
 
 type InputType = {
@@ -8,7 +8,15 @@ type InputType = {
 
 const CustomInput = ({val,onChange}:InputType) => {
     return (
-        <Input placeholder='0.0' value={val} onChange={onChange} step="0.00001" min="0.0" />
+        
+    <InputGroup size='md' width="50%">
+        <Input placeholder='0.0' value={val} onChange={onChange} step="0.00001" border="transparant"  />
+    <InputRightElement width='4.5rem'>
+      <Button h='1.75rem' size='sm' >
+        Clear
+      </Button>
+    </InputRightElement>
+  </InputGroup>
     )
 }
 
