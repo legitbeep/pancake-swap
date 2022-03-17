@@ -27,7 +27,7 @@ const Header = () => {
       </Heading>
 
       <Box marginLeft="auto">
-        <Button margin="0 12px" variant="primary">{true ? "Connect":"8xe087...9807"}</Button>
+        <Button size="sm" margin="0 12px" variant="primary">{true ? "Connect":"8xe087...9807"}</Button>
         <ThemeToggle />
       </Box>
     </Flex>
