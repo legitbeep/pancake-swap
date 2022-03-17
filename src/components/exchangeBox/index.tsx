@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 import { Button, Box, Heading, Text, Flex, Divider, Select } from '@chakra-ui/react';
 
 import CustomInput from 'components/input';
@@ -14,6 +14,9 @@ const Exchange = () => {
     const [inVal, setInVal] = useState("0.0");
     const [outVal, setOutVal] = useState("0.0");
     
+    const [inCoin, setInCoin] = useState("BNB");
+    const [outCoin, setOutCoin] = useState("CAKE");
+
     const handleChange = (val:number) => {
         return (e:any) => {
             let data = e;
@@ -22,6 +25,24 @@ const Exchange = () => {
             : setInVal(data);
         }
     }
+
+    const handleCoin = (isOutCoin:number) => {
+        return (e:any) => {
+            isOutCoin ? setOutCoin(e.target.value) : setInCoin(e.target.value);
+        }
+    }
+
+    const handleSwitch = () => {
+        const tempVal = outVal;
+        const tempCoin = outCoin;
+
+        setOutVal(inVal);
+        setOutCoin(inCoin);
+        
+        setInVal(tempVal);
+        setInCoin(tempCoin);
+    }
+
     return (
         <Box maxW={480} bgColor="gray.700" mx="auto" my="30px" borderRadius="26px" padding="26px" >
                 <Flex justifyContent="space-between" mb="14px">
@@ -39,27 +60,29 @@ const Exchange = () => {
                     <Text as="h2" ml="14px" color="white">From</Text>
                     <Flex justifyContent="space-between" mt="10px" >
                         <CustomInput val={inVal} onChange={handleChange(0)}/>
-                        <Select variant="filled" maxW="100px" color="white">
+                        <Select bgColor="brand.secondary" value={inCoin} onChange={handleCoin(0)} variant="filled" maxW="100px" color="white" >
                             {
-                                coins.map(coin =>
+                                coins.map(coin =>{
+                                    return outCoin !== coin.name && 
                                     <option value={coin.name} key={coin.name}>{coin.name}</option>
-                                )
+                                    })
                             }
                         </Select>
                     </Flex>
                 </Box>
                 <Flex mb="20px" justifyContent="center">
-                    <Button variant="secondary"><FiArrowDown /></Button>
+                    <Button variant="secondary" onClick={handleSwitch}><FiArrowDown /></Button>
                 </Flex>
                 <Box bgColor="brand.srShadow" borderRadius="26px" p="18px" mb="20px">
                     <Text as="h2" ml="14px" color="white">To</Text>
                     <Flex justifyContent="space-between" mt="10px" >
                         <CustomInput val={outVal} onChange={handleChange(1)}/>
-                        <Select variant="filled" maxW="100px" color="white">
+                        <Select bgColor="brand.secondary" value={outCoin} onChange={handleCoin(1)} variant="filled" maxW="100px" color="white" >
                             {
-                                coins.map(coin =>
+                                coins.map(coin =>{
+                                    return inCoin !== coin.name && 
                                     <option value={coin.name} key={coin.name}>{coin.name}</option>
-                                )
+                                })
                             }
                         </Select>
                     </Flex>
