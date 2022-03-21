@@ -1,15 +1,16 @@
 import { ChangeEventHandler, useState } from 'react';
-import { Button, Box, Heading, Text, Flex, Divider, Select } from '@chakra-ui/react';
+import { Button, Box, Heading, Text, Flex, Divider, Select, useDisclosure } from '@chakra-ui/react';
 import { CurrencyAmount, JSBI, Token, Trade } from '@pancakeswap/sdk'
 import { IoSettingsSharp } from 'react-icons/io5';
 import { MdHistory } from "react-icons/md"; 
 import { FiArrowDown } from 'react-icons/fi';
 
 import CustomInput from 'components/input';
+import CustomModal from 'components/modal';
 import { coins } from 'utils/constants';
 
 const Exchange = () => {
-    
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [inVal, setInVal] = useState("");
     const [outVal, setOutVal] = useState("");
     
@@ -43,6 +44,8 @@ const Exchange = () => {
     }
 
     return (
+        <>
+        <CustomModal isOpen={isOpen} onClose={onClose} title="Confirm Transaction" desc="OK" />
         <Box maxW={480} bgColor="gray.700" mx="auto" my="30px" borderRadius="26px" padding="26px" >
                 <Flex justifyContent="space-between" mb="14px">
                     <Box>
@@ -86,8 +89,9 @@ const Exchange = () => {
                         </Select>
                     </Flex>
                 </Box>
-                <Button width="100%" mt="10px" variant="primary">Swap</Button>
+                <Button width="100%" mt="10px" variant="primary" onClick={onOpen}>Swap</Button>
             </Box>
+        </>
     )
 }
 
