@@ -1,5 +1,7 @@
-import contractAbi from './abi.json';
+import abi from './abi.json';
 
+export const contractAbi = abi;
+export const CHAIN_ID = "97";
 export const coins = [
     { name: "BNB" },
     { name: "BSD" },

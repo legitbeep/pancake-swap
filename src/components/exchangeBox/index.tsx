@@ -1,23 +1,22 @@
 import { ChangeEventHandler, useState } from 'react';
 import { Button, Box, Heading, Text, Flex, Divider, Select } from '@chakra-ui/react';
-
-import CustomInput from 'components/input';
-
+import { CurrencyAmount, JSBI, Token, Trade } from '@pancakeswap/sdk'
 import { IoSettingsSharp } from 'react-icons/io5';
 import { MdHistory } from "react-icons/md"; 
 import { FiArrowDown } from 'react-icons/fi';
 
+import CustomInput from 'components/input';
 import { coins } from 'utils/constants';
 
 const Exchange = () => {
     
-    const [inVal, setInVal] = useState("0.0");
-    const [outVal, setOutVal] = useState("0.0");
+    const [inVal, setInVal] = useState("");
+    const [outVal, setOutVal] = useState("");
     
     const [inCoin, setInCoin] = useState("BNB");
     const [outCoin, setOutCoin] = useState("CAKE");
 
-    const handleChange = (val:number) => {
+    const handleInputChange = (val:number) => {
         return (e:any) => {
             let data = e;
             if (data.match(/^[0-9]*[.,]?[0-9]*$/))
@@ -59,7 +58,7 @@ const Exchange = () => {
                 <Box bgColor="brand.srShadow" borderRadius="26px" p="18px" mb="20px">
                     <Text as="h2" ml="14px" color="white">From</Text>
                     <Flex justifyContent="space-between" mt="10px" >
-                        <CustomInput val={inVal} onChange={handleChange(0)}/>
+                        <CustomInput val={inVal} onChange={handleInputChange(0)}/>
                         <Select bgColor="brand.secondary" value={inCoin} onChange={handleCoin(0)} variant="filled" maxW="100px" color="white" >
                             {
                                 coins.map(coin =>{
@@ -76,7 +75,7 @@ const Exchange = () => {
                 <Box bgColor="brand.srShadow" borderRadius="26px" p="18px" mb="20px">
                     <Text as="h2" ml="14px" color="white">To</Text>
                     <Flex justifyContent="space-between" mt="10px" >
-                        <CustomInput val={outVal} onChange={handleChange(1)}/>
+                        <CustomInput val={outVal} onChange={handleInputChange(1)}/>
                         <Select bgColor="brand.secondary" value={outCoin} onChange={handleCoin(1)} variant="filled" maxW="100px" color="white" >
                             {
                                 coins.map(coin =>{

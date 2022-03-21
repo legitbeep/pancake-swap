@@ -1,4 +1,4 @@
-import { useState } from 'react'; 
+import { useState } from 'react';
 import { Button, Box, Flex} from '@chakra-ui/react';
 
 import ExchangeBox from 'components/exchangeBox';
