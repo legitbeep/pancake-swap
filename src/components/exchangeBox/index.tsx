@@ -46,7 +46,7 @@ const Exchange = () => {
     return (
         <>
         <CustomModal isOpen={isOpen} onClose={onClose} title="Confirm Transaction" desc="OK" />
-        <Box maxW={480} bgColor="gray.700" mx="auto" my="30px" borderRadius="26px" padding="26px" >
+        <Box maxW={400} bgColor="gray.700" mx="auto" my="30px" borderRadius="26px" padding="26px" >
                 <Flex justifyContent="space-between" mb="14px">
                     <Box>
                         <Heading color="white" as="h2" fontWeight="bold" fontSize="18px">Exchange</Heading>

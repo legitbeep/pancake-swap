@@ -1,17 +1,43 @@
 import {useEffect} from 'react';
-import { Box, Flex, Heading, Button } from "@chakra-ui/react";
+import { Box, Flex, Heading, Button, useToast } from "@chakra-ui/react";
 import Link from "next/link";
+import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { injected } from 'utils/connector';
 
 import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   
+  const { active, account, library, connector, error, activate, deactivate } = useWeb3React();
+  const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;  
+  const toast = useToast();
+
   useEffect(() => {
     // @ts-ignore
     if (typeof window.ethereum === 'undefined') {
       alert('Please install metamask to continue!');
     }
   },[]);
+
+  useEffect(() =>{
+    active && isUnsupportedChainIdError && toast({
+      title: 'Error.',
+      description: "Connected to unsupported chain.",
+      status: 'error',
+      duration: 6000,
+      isClosable: true,
+    })
+  },[account,isUnsupportedChainIdError,active])
+
+  const connect = async () => {
+    if(!active){
+      try {
+        await activate(injected);
+      } catch(err) {
+        console.error(err);
+      }
+    }
+  }
 
   return(
     <Flex as="header" width="full" align="center">
@@ -27,7 +53,9 @@ const Header = () => {
       </Heading>
 
       <Box marginLeft="auto">
-        <Button size="sm" margin="0 12px" variant="primary">{true ? "Connect":"8xe087...9807"}</Button>
+        <Button size="sm" margin="0 12px" variant="primary" onClick={connect} >
+            {active ? account?.slice(0,5)+"..."+account?.slice(-4) : "Connect"}
+        </Button>
         <ThemeToggle />
       </Box>
     </Flex>

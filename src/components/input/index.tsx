@@ -8,7 +8,7 @@ type InputType = {
 
 const CustomInput = ({val,onChange}:InputType) => {
     return (     
-      <NumberInput color="white" value={val} onChange={onChange} border="transparent" placeholder="0.0" >
+      <NumberInput color="white" value={val} onChange={onChange} border="transparent" placeholder="0.0" maxW="200px">
         <NumberInputField placeholder="0.0" />
       </NumberInput>
     )
