@@ -17,6 +17,8 @@
     "@chakra-ui/react": "^1.7.2",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
+    "@ethersproject/providers": "^5.6.1",
+    "@ethersproject/units": "^5.6.0",
     "@fontsource/lexend": "^4.5.1",
     "@pancakeswap/sdk": "^2.4.5",
     "@pancakeswap/uikit": "^0.64.0",
