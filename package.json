@@ -13,6 +13,7 @@
     "post-build": "next-sitemap"
   },
   "dependencies": {
+    "@binance-chain/bsc-connector": "^1.0.0",
     "@chakra-ui/react": "^1.7.2",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",

@@ -938,6 +938,15 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     "to-fast-properties" "^2.0.0"
 
+"@binance-chain/bsc-connector@^1.0.0":
+  "integrity" "sha512-Id/P/Zs8Cgg+fJv3XN3BVWZB3Pj+VA00flhpkB6K+vUzjMihS+sZFrMYDnjiRfrJgi0ppEMqRsMlOli9+qwxaA=="
+  "resolved" "https://registry.npmjs.org/@binance-chain/bsc-connector/-/bsc-connector-1.0.0.tgz"
+  "version" "1.0.0"
+  dependencies:
+    "@web3-react/abstract-connector" "^6.0.7"
+    "@web3-react/types" "^6.0.7"
+    "tiny-warning" "^1.0.3"
+
 "@chakra-ui/accordion@1.4.1":
   "integrity" "sha512-/E0FW5YHNVD6WwMGiuQuXpA70P2CKAV+MzcMITnSGPWsh9XD0mcXvMkIALVojfFk9tcCFdIGnxX/HWr41LzgIg=="
   "resolved" "https://registry.npmjs.org/@chakra-ui/accordion/-/accordion-1.4.1.tgz"

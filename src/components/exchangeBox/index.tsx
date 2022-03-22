@@ -4,12 +4,14 @@ import { CurrencyAmount, JSBI, Token, Trade } from '@pancakeswap/sdk'
 import { IoSettingsSharp } from 'react-icons/io5';
 import { MdHistory } from "react-icons/md"; 
 import { FiArrowDown } from 'react-icons/fi';
+import { useWeb3React } from '@web3-react/core';
 
 import CustomInput from 'components/input';
 import CustomModal from 'components/modal';
 import { coins } from 'utils/constants';
 
 const Exchange = () => {
+    const { active, account, ...web3React } = useWeb3React(); 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [inVal, setInVal] = useState("");
     const [outVal, setOutVal] = useState("");
@@ -89,7 +91,9 @@ const Exchange = () => {
                         </Select>
                     </Flex>
                 </Box>
-                <Button width="100%" mt="10px" variant="primary" onClick={onOpen}>Swap</Button>
+                <Button disabled={!active} width="100%" mt="10px" variant="primary" onClick={onOpen}>
+                    {active ? "Swap" : "Unlock Wallet"}
+                </Button>
             </Box>
         </>
     )
