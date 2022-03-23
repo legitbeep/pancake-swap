@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { formatEther } from "@ethersproject/units";
+import { BscConnector } from '@binance-chain/bsc-connector'
 
 export const useBalance = () => {
     const [balance, setBalance] = useState("");
@@ -31,7 +32,7 @@ export const useBlockNumber = () => {
 } 
 
 export const useSigner = (message?:string) => {
-    const { library, account } = useWeb3React();
+    const { library, account, connector} = useWeb3React();
     const [signer, setSigner] = useState();
 
     useEffect(() => {

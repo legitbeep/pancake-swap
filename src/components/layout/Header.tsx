@@ -3,14 +3,12 @@ import { Box, Flex, Heading, Button, useToast } from "@chakra-ui/react";
 import Link from "next/link";
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { injected } from 'utils/connector';
-import useAuth from 'hooks/useAuth';
 
 import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   
   const { active, account, library, connector, error, activate, deactivate } = useWeb3React();
-  const { login } = useAuth();
   const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;  
   const toast = useToast();
 
@@ -34,7 +32,7 @@ const Header = () => {
   const connect = async () => {
     if(!active){
       try {
-        await login("injected") // activate(injected);
+        await activate(injected);
         console.log("login")
       } catch(err) {
         console.error(err);
