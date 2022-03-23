@@ -9,16 +9,13 @@ import Web3 from 'web3';
 import defaultSeoConfig from "../../next-seo.config";
 import Layout from "components/layout";
 import customTheme from "styles/customTheme";
+import { getLibrary } from "utils/connector";
 import "styles/globals.css";
 
 function MyApp({
   Component,
   pageProps,
 }: AppProps) {
-
-  const getLibrary = (provider:any) => {
-    return new Web3(provider);
-  }
 
   return (
       <ChakraProvider theme={customTheme}>
