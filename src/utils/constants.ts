@@ -1,4 +1,4 @@
-import abi from './abi.json';
+import abi from './contract/abi.json';
 
 export const contractAbi = abi;
 export const CHAIN_ID = "97";
