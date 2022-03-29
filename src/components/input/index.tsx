@@ -4,11 +4,12 @@ import {ChangeEventHandler} from 'react';
 type InputType = {
     val:any;
     onChange: any;
+    onBlur?: () => void;
 }
 
-const CustomInput = ({val,onChange}:InputType) => {
+const CustomInput = ({val,onChange, onBlur}:InputType) => {
     return (     
-      <NumberInput color="white" value={val} onChange={onChange} border="transparent" placeholder="0.0" maxW="200px">
+      <NumberInput color="white" value={val} onBlur={onBlur} onChange={onChange} border="transparent" placeholder="0.0" maxW="200px">
         <NumberInputField placeholder="0.0" />
       </NumberInput>
     )

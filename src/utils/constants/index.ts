@@ -34,5 +34,9 @@ export const tokens = [
 export const contracts = {
     pancakeRouter : "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3",
     pancakeFactory : ""
-  }
-  
+}
+
+// main net
+//   master : 0x73feaa1eE314F8c655E354234017bE2193C9E24E
+//   factory v2 : 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73
+//   router v2 : 0x10ED43C718714eb63d5aA57B78B54704E256024E

@@ -3,14 +3,14 @@ import { Button, Box, Heading, Text, Flex, Divider, Select, useDisclosure } from
 import { CurrencyAmount, JSBI, Token, Trade } from '@pancakeswap/sdk'
 import { IoSettingsSharp } from 'react-icons/io5';
 import { MdHistory } from "react-icons/md"; 
-import { FiArrowDown } from 'react-icons/fi';
+import { IoAdd } from 'react-icons/io5';
 import { useWeb3React } from '@web3-react/core';
 
 import CustomInput from 'components/input';
 import CustomModal from 'components/modal';
 import { tokens } from 'utils/constants';
 
-const Exchange = () => {
+const AddLiquidity = ({ callback } : {callback : () => void}) => {
     const { active, account, ...web3React } = useWeb3React(); 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [inVal, setInVal] = useState("");
@@ -19,67 +19,36 @@ const Exchange = () => {
     const [inCoin, setInCoin] = useState("BNB");
     const [outCoin, setOutCoin] = useState("CAKE");
 
-    const [estimated, setEstimated] = useState([false,false]);
-    
-    const estimate = (id: number) => {
-        return () => {
-            if (!id) {
-                // estimate to
-                setEstimated([false,true]);
-            } else {
-                // estimate from
-                setEstimated([true,false]);
-            }
-        }
-    }
-
     const handleInputChange = (val:number) => {
         return (e:any) => {
             let data = e;
             if (data.match(/^[0-9]*[.,]?[0-9]*$/))
             val ? setOutVal(data)
             : setInVal(data);
-            estimate(val)();
         }
     }
 
     const handleCoin = (isOutCoin:number) => {
         return (e:any) => {
             isOutCoin ? setOutCoin(e.target.value) : setInCoin(e.target.value);
-            estimate(isOutCoin)();
         }
-    }
-
-    const handleSwitch = () => {
-        const tempVal = outVal;
-        const tempCoin = outCoin;
-
-        setOutVal(inVal);
-        setOutCoin(inCoin);
-        
-        setInVal(tempVal);
-        setInCoin(tempCoin);
-
-        setEstimated([false,false])
     }
 
     return (
         <>
         <CustomModal isOpen={isOpen} onClose={onClose} title="Confirm Transaction" desc="OK" />
         <Box maxW={400} bgColor="gray.700" mx="auto" my="30px" borderRadius="26px" padding="26px" >
-                <Flex justifyContent="space-between" mb="14px">
-                    <Box>
-                        <Heading color="white" as="h2" fontWeight="bold" fontSize="18px">Exchange</Heading>
-                        <Text as="p" color="brand.secondary">Trade tokens in instant</Text>
+                <Flex mb="14px" alignItems="center" >
+                    <Box width="20%">
+                        <Button onClick={callback} >{"<"}</Button>
                     </Box>
-                    <Box>
-                        <Button variant="icon" color="brand.primary" fontSize='30px'><IoSettingsSharp /></Button>
-                        <Button variant="icon" color="brand.primary" fontSize='30px'><MdHistory /></Button>
+                    <Box width="60%" display="flex" justifyContent="center">
+                        <Heading color="white" as="h2" my="auto" fontWeight="bold" fontSize="18px">Liquidity</Heading>
                     </Box>
                 </Flex>
                 <Divider orientation='horizontal' my="20px" />
                 <Box bgColor="brand.srShadow" borderRadius="26px" p="18px" mb="20px">
-                    <Text as="h2" ml="14px" color="white">From {estimated[0] && ' (estimated)'}</Text>
+                    <Text as="h2" ml="14px" color="white">Input</Text>
                     <Flex justifyContent="space-between" mt="10px" >
                         <CustomInput val={inVal} onChange={handleInputChange(0)}/>
                         <Select bgColor="brand.secondary" value={inCoin} onChange={handleCoin(0)} variant="filled" maxW="100px" color="white" >
@@ -93,10 +62,10 @@ const Exchange = () => {
                     </Flex>
                 </Box>
                 <Flex mb="20px" justifyContent="center">
-                    <Button variant="secondary" onClick={handleSwitch}><FiArrowDown /></Button>
+                    <Button variant="secondary" ><IoAdd /></Button>
                 </Flex>
                 <Box bgColor="brand.srShadow" borderRadius="26px" p="18px" mb="20px">
-                    <Text as="h2" ml="14px" color="white">To  {estimated[1] && ' (estimated)'}</Text>
+                    <Text as="h2" ml="14px" color="white">Input</Text>
                     <Flex justifyContent="space-between" mt="10px" >
                         <CustomInput val={outVal} onChange={handleInputChange(1)}/>
                         <Select bgColor="brand.secondary" value={outCoin} onChange={handleCoin(1)} variant="filled" maxW="100px" color="white" >
@@ -110,11 +79,11 @@ const Exchange = () => {
                     </Flex>
                 </Box>
                 <Button disabled={!active} width="100%" mt="10px" variant="primary" onClick={onOpen}>
-                    {active ? "Swap" : "Unlock Wallet"}
+                    {active ? "Add Liquidity" : "Unlock Wallet"}
                 </Button>
             </Box>
         </>
     )
 }
 
-export default Exchange;
+export default AddLiquidity;
