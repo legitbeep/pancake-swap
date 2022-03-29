@@ -37,9 +37,7 @@ const Header = () => {
         console.error(err);
       }
     }
-    console.log(account,active,error)
   }
-
 
   return(
     <Flex as="header" width="full" align="center">

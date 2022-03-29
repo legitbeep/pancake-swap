@@ -78,7 +78,6 @@ export function useDerivedSwapInfo(
     typedValue: string,
     inputCurrency: Currency,
     outputCurrency: Currency,
-    recipient: string,
   ) {
       
     const isExactIn: boolean = independentField === Field.INPUT
@@ -89,6 +88,10 @@ export function useDerivedSwapInfo(
     
     const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
+    console.log({
+      v2Trade: v2Trade?.executionPrice?.toSignificant(6) ?? undefined
+    })
+  
     // const { account } = useWeb3React()
     //const recipientLookup = useENS(recipient ?? undefined)
     // const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
@@ -146,10 +149,6 @@ export function useDerivedSwapInfo(
     // if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     //   inputError = 'Insufficient balance'
     // }
-  
-    console.log({
-      v2Trade: v2Trade?.executionPrice?.toSignificant(6) ?? undefined
-    })
   
     return {
       v2Trade: v2Trade ?? undefined,
