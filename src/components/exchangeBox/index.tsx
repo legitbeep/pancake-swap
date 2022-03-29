@@ -8,7 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 
 import CustomInput from 'components/input';
 import CustomModal from 'components/modal';
-import { coins } from 'utils/constants';
+import { tokens } from 'utils/constants';
 
 const Exchange = () => {
     const { active, account, ...web3React } = useWeb3React(); 
@@ -66,7 +66,7 @@ const Exchange = () => {
                         <CustomInput val={inVal} onChange={handleInputChange(0)}/>
                         <Select bgColor="brand.secondary" value={inCoin} onChange={handleCoin(0)} variant="filled" maxW="100px" color="white" >
                             {
-                                coins.map(coin =>{
+                                tokens.map(coin =>{
                                     return outCoin !== coin.name && 
                                     <option value={coin.name} key={coin.name}>{coin.name}</option>
                                     })
@@ -83,7 +83,7 @@ const Exchange = () => {
                         <CustomInput val={outVal} onChange={handleInputChange(1)}/>
                         <Select bgColor="brand.secondary" value={outCoin} onChange={handleCoin(1)} variant="filled" maxW="100px" color="white" >
                             {
-                                coins.map(coin =>{
+                                tokens.map(coin =>{
                                     return inCoin !== coin.name && 
                                     <option value={coin.name} key={coin.name}>{coin.name}</option>
                                 })

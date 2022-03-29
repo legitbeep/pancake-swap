@@ -8,7 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 
 import CustomInput from 'components/input';
 import CustomModal from 'components/modal';
-import { coins } from 'utils/constants';
+import { tokens } from 'utils/constants';
 
 const Liquidity = () => {
     const { active, account, ...web3React } = useWeb3React(); 
@@ -34,17 +34,6 @@ const Liquidity = () => {
         }
     }
 
-    const handleSwitch = () => {
-        const tempVal = outVal;
-        const tempCoin = outCoin;
-
-        setOutVal(inVal);
-        setOutCoin(inCoin);
-        
-        setInVal(tempVal);
-        setInCoin(tempCoin);
-    }
-
     return (
         <>
         <CustomModal isOpen={isOpen} onClose={onClose} title="Confirm Transaction" desc="OK" />
@@ -54,15 +43,19 @@ const Liquidity = () => {
                         <Heading color="white" as="h2" fontWeight="bold" fontSize="18px">Liquidity</Heading>
                         <Text as="p" color="brand.secondary">Add liquidity to the pool.</Text>
                     </Box>
+                    <Box>
+                        <Button variant="icon" color="brand.primary" fontSize='30px'><IoSettingsSharp /></Button>
+                        <Button variant="icon" color="brand.primary" fontSize='30px'><MdHistory /></Button>
+                    </Box>
                 </Flex>
                 <Divider orientation='horizontal' my="20px" />
                 <Box bgColor="brand.srShadow" borderRadius="26px" p="18px" mb="20px">
-                    <Text as="h2" ml="14px" color="white">Add</Text>
+                    <Text as="h2" ml="14px" color="white">Input</Text>
                     <Flex justifyContent="space-between" mt="10px" >
                         <CustomInput val={inVal} onChange={handleInputChange(0)}/>
                         <Select bgColor="brand.secondary" value={inCoin} onChange={handleCoin(0)} variant="filled" maxW="100px" color="white" >
                             {
-                                coins.map(coin =>{
+                                tokens.map(coin =>{
                                     return outCoin !== coin.name && 
                                     <option value={coin.name} key={coin.name}>{coin.name}</option>
                                     })
@@ -71,15 +64,15 @@ const Liquidity = () => {
                     </Flex>
                 </Box>
                 <Flex mb="20px" justifyContent="center">
-                    <Button variant="secondary" onClick={handleSwitch}><IoAdd /></Button>
+                    <Button variant="secondary" ><IoAdd /></Button>
                 </Flex>
                 <Box bgColor="brand.srShadow" borderRadius="26px" p="18px" mb="20px">
-                    <Text as="h2" ml="14px" color="white">Add</Text>
+                    <Text as="h2" ml="14px" color="white">Input</Text>
                     <Flex justifyContent="space-between" mt="10px" >
                         <CustomInput val={outVal} onChange={handleInputChange(1)}/>
                         <Select bgColor="brand.secondary" value={outCoin} onChange={handleCoin(1)} variant="filled" maxW="100px" color="white" >
                             {
-                                coins.map(coin =>{
+                                tokens.map(coin =>{
                                     return inCoin !== coin.name && 
                                     <option value={coin.name} key={coin.name}>{coin.name}</option>
                                 })

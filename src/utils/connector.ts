@@ -6,10 +6,9 @@ import { Web3Provider } from "@ethersproject/providers";
 
 const POLLING_INTERVAL = 12000
 // const rpcUrl = getNodeUrl()
-const chainId = parseInt("97", 10)
 
-const bscConnector = new BscConnector({ supportedChainIds: [chainId] })
-export const injected = new InjectedConnector({ supportedChainIds: [1,3,4,5,42] });
+export const bscConnector = new BscConnector({ supportedChainIds: [56,97] })
+export const injected = new InjectedConnector({ supportedChainIds: [56,97] });
 
 export type ConnectorName = "injected" | "bsc"
 export const connectorsByName = {
