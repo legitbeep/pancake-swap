@@ -1,5 +1,12 @@
 import abi from '../contract/abi.json';
+import { Percent, ChainId, JSBI, Token } from '@pancakeswap/sdk';
+import { mainnetTokens, testnetTokens } from 'utils/constants/tokens';
 
+// a list of tokens by chain
+type ChainTokenList = {
+    readonly [chainId in ChainId]: Token[]
+  }
+  
 export const contractAbi = abi;
 
 export const CHAIN_ID = "97";
@@ -40,3 +47,30 @@ export const contracts = {
 //   master : 0x73feaa1eE314F8c655E354234017bE2193C9E24E
 //   factory v2 : 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73
 //   router v2 : 0x10ED43C718714eb63d5aA57B78B54704E256024E
+
+
+export const ZERO_PERCENT = new Percent('0')
+export const ONE_HUNDRED_PERCENT = new Percent('1')
+
+
+export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: Token[] } } = {
+    [ChainId.MAINNET]: {},
+}
+export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
+    [ChainId.MAINNET]: [
+        mainnetTokens.wbnb,
+        mainnetTokens.cake,
+        mainnetTokens.busd,
+        mainnetTokens.usdt,
+        mainnetTokens.btcb,
+        mainnetTokens.ust,
+        mainnetTokens.eth,
+        mainnetTokens.usdc,
+    ],
+    [ChainId.TESTNET]: [testnetTokens.wbnb, testnetTokens.cake, testnetTokens.busd],
+}
+export const ADDITIONAL_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: Token[] } } = {
+    [ChainId.MAINNET]: {},
+}
+export const BETTER_TRADE_LESS_HOPS_THRESHOLD = new Percent(JSBI.BigInt(50), JSBI.BigInt(10000))
+  
