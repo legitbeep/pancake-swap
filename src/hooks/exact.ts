@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { isTradeBetter } from 'utils/trade'
 import { wrappedCurrency } from 'utils/wrappedCurrency';
+import flatMap from 'lodash/flatMap'
 import {
     BASES_TO_CHECK_TRADES_AGAINST,
     CUSTOM_BASES,
@@ -15,7 +16,7 @@ const MAX_HOPS = 3
 
 
 export function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
-    const { chainId } = useWeb3React()
+    const chainId = 97;
   
     const [tokenA, tokenB] = chainId
       ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]

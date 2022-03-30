@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { formatEther } from "@ethersproject/units";
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pancakeswap/sdk'
-import { useTradeExactIn, useTradeExactOut } from './exact';
+import { Currency, CurrencyAmount, JSBI, Token, TokenAmount, Trade, ETHER, WETH, ChainId, Pair } from '@pancakeswap/sdk'
+import { useAllCommonPairs, useTradeExactIn, useTradeExactOut } from './exact';
 
 export enum Field {
     INPUT = 'INPUT',
@@ -71,7 +71,6 @@ const tryParseAmount = (value?: string, currency?: Currency): CurrencyAmount | T
     // necessary for all paths to return a value
     return undefined
   }
-
 
 export function useDerivedSwapInfo(
     independentField: Field,
@@ -154,4 +153,24 @@ export function useDerivedSwapInfo(
       v2Trade: v2Trade ?? undefined,
     }
   }
+
   
+export function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
+  return chainId && currency === ETHER ? WETH[chainId] : currency instanceof Token ? currency : undefined
+}
+
+export function useCurrency (value: string) {
+
+} 
+
+export const useTrade = (inputCurrency: Currency, outputCurrency: Currency, typedValue: string, isInput: boolean) => {
+  const currencyAmount = tryParseAmount(typedValue, (isInput ? inputCurrency : outputCurrency) ?? undefined) as CurrencyAmount | TokenAmount;
+
+  const allowedPairs = new Pair(new TokenAmount(inputCurrency), new TokenAmount(outputCurrency))seAllCommonPairs(inputCurrency, outputCurrency);
+
+  return useMemo(() => {
+    return isInput 
+        ? Trade.bestTradeExactIn(allowedPairs, currencyAmount, outputCurrency, { maxHops: 1, maxNumResults: 1 })[0]
+        : Trade.bestTradeExactOut(allowedPairs, inputCurrency, currencyAmount, { maxHops: 1, maxNumResults: 1 })[0]
+  },[isInput, currencyAmount, outputCurrency, inputCurrency, allowedPairs])
+}

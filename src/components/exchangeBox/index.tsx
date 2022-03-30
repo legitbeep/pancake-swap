@@ -8,7 +8,10 @@ import { useWeb3React } from '@web3-react/core';
 
 import CustomInput from 'components/input';
 import CustomModal from 'components/modal';
-import { tokens } from 'utils/constants';
+import { mainnetTokens, testnetTokens } from 'utils/constants/tokens';
+import { useTrade } from 'hooks/index';
+
+const tokens = testnetTokens;
 
 const Exchange = () => {
     const { active, account, ...web3React } = useWeb3React(); 
@@ -16,37 +19,48 @@ const Exchange = () => {
     const [inVal, setInVal] = useState("");
     const [outVal, setOutVal] = useState("");
     
-    const [inCoin, setInCoin] = useState("BNB");
-    const [outCoin, setOutCoin] = useState("CAKE");
+    const [inCoin, setInCoin] = useState<keyof typeof tokens>("wbnb");
+    const [outCoin, setOutCoin] = useState<keyof typeof tokens>("cake");
 
     const [estimated, setEstimated] = useState([false,false]);
     
-    const estimate = (id: number) => {
-        return () => {
-            if (!id) {
-                // estimate to
+    const estimate = (isOutCoin: number) => {
+        return (data: string) => {
+            if (!isOutCoin) {
+                // estimate out
+                console.log(
+                useTrade(tokens[inCoin], tokens[outCoin], data,true)?.executionPrice?.toSignificant(6)
+                )
                 setEstimated([false,true]);
             } else {
-                // estimate from
+                // estimate in
+                console.log(
+                useTrade(tokens[inCoin], tokens[outCoin], data,false)?.executionPrice?.toSignificant(6)
+                )
                 setEstimated([true,false]);
             }
         }
     }
 
-    const handleInputChange = (val:number) => {
+    const handleInputChange = (isOutCoin:number) => {
         return (e:any) => {
             let data = e;
             if (data.match(/^[0-9]*[.,]?[0-9]*$/))
-            val ? setOutVal(data)
-            : setInVal(data);
-            estimate(val)();
+            {
+                isOutCoin 
+                ? setOutVal(data)
+                : setInVal(data)
+                estimate(isOutCoin)(data);
+            } else {
+                setEstimated([false,false])
+            }
         }
     }
 
     const handleCoin = (isOutCoin:number) => {
         return (e:any) => {
             isOutCoin ? setOutCoin(e.target.value) : setInCoin(e.target.value);
-            estimate(isOutCoin)();
+            estimate(isOutCoin)(e.target.value);
         }
     }
 
@@ -84,9 +98,9 @@ const Exchange = () => {
                         <CustomInput val={inVal} onChange={handleInputChange(0)}/>
                         <Select bgColor="brand.secondary" value={inCoin} onChange={handleCoin(0)} variant="filled" maxW="100px" color="white" >
                             {
-                                tokens.map(coin =>{
-                                    return outCoin !== coin.name && 
-                                    <option value={coin.name} key={coin.name}>{coin.name}</option>
+                                Object.keys(tokens).map(coin =>{
+                                    return outCoin !== coin && 
+                                    <option value={coin} key={coin}>{coin.toUpperCase()}</option>
                                     })
                             }
                         </Select>
@@ -100,11 +114,11 @@ const Exchange = () => {
                     <Flex justifyContent="space-between" mt="10px" >
                         <CustomInput val={outVal} onChange={handleInputChange(1)}/>
                         <Select bgColor="brand.secondary" value={outCoin} onChange={handleCoin(1)} variant="filled" maxW="100px" color="white" >
-                            {
-                                tokens.map(coin =>{
-                                    return inCoin !== coin.name && 
-                                    <option value={coin.name} key={coin.name}>{coin.name}</option>
-                                })
+                        {
+                                Object.keys(tokens).map(coin =>{
+                                    return inCoin !== coin && 
+                                    <option value={coin} key={coin}>{coin.toUpperCase()}</option>
+                                    })
                             }
                         </Select>
                     </Flex>
