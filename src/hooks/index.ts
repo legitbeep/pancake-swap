@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { formatEther } from "@ethersproject/units";
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Token, TokenAmount, Trade, ETHER, WETH, ChainId, Pair } from '@pancakeswap/sdk'
+import { Currency, CurrencyAmount, JSBI, Token, TokenAmount,TradeType, Trade, Route, ETHER, WETH, ChainId, Pair } from '@pancakeswap/sdk'
 import { useAllCommonPairs, useTradeExactIn, useTradeExactOut } from './exact';
 
 export enum Field {
@@ -163,14 +163,27 @@ export function useCurrency (value: string) {
 
 } 
 
-export const useTrade = (inputCurrency: Currency, outputCurrency: Currency, typedValue: string, isInput: boolean) => {
+export const useTrade = (inputCurrency: Token, outputCurrency: Token, typedValue: string, isInput: boolean) => {
   const currencyAmount = tryParseAmount(typedValue, (isInput ? inputCurrency : outputCurrency) ?? undefined) as CurrencyAmount | TokenAmount;
 
-  const allowedPairs = new Pair(new TokenAmount(inputCurrency), new TokenAmount(outputCurrency))seAllCommonPairs(inputCurrency, outputCurrency);
+  const allowedPairs = new Pair(
+    new TokenAmount(inputCurrency,  "1000000000000000000"),
+    new TokenAmount(outputCurrency, "1000000000000000000")
+  );
+  const tokenA_to_tokenB = new Route([allowedPairs], (isInput ? outputCurrency : inputCurrency));
 
-  return useMemo(() => {
-    return isInput 
-        ? Trade.bestTradeExactIn(allowedPairs, currencyAmount, outputCurrency, { maxHops: 1, maxNumResults: 1 })[0]
-        : Trade.bestTradeExactOut(allowedPairs, inputCurrency, currencyAmount, { maxHops: 1, maxNumResults: 1 })[0]
-  },[isInput, currencyAmount, outputCurrency, inputCurrency, allowedPairs])
+  if (!currencyAmount) return null;
+  const trade = new Trade(
+    tokenA_to_tokenB,
+    new TokenAmount((isInput ? outputCurrency : inputCurrency), "1000000000000000"),
+    TradeType.EXACT_INPUT
+  );
+  return trade;
+
+  // return useMemo(() => {
+    // if (!currencyAmount) return null;
+    // return isInput 
+    //     ? Trade.bestTradeExactIn(allowedPairs, currencyAmount, outputCurrency, { maxHops: 1, maxNumResults: 1 })[0]
+    //     : Trade.bestTradeExactOut(allowedPairs, inputCurrency, currencyAmount, { maxHops: 1, maxNumResults: 1 })[0]
+  // },[isInput, currencyAmount, outputCurrency, inputCurrency, allowedPairs])
 }

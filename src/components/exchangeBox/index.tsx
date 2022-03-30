@@ -29,13 +29,13 @@ const Exchange = () => {
             if (!isOutCoin) {
                 // estimate out
                 console.log(
-                useTrade(tokens[inCoin], tokens[outCoin], data,true)?.executionPrice?.toSignificant(6)
+                useTrade(tokens[inCoin], tokens[outCoin], data,true)
                 )
                 setEstimated([false,true]);
             } else {
                 // estimate in
                 console.log(
-                useTrade(tokens[inCoin], tokens[outCoin], data,false)?.executionPrice?.toSignificant(6)
+                useTrade(tokens[inCoin], tokens[outCoin], data,false)
                 )
                 setEstimated([true,false]);
             }
