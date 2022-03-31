@@ -4,7 +4,7 @@ import { formatEther } from "@ethersproject/units";
 import { parseUnits } from '@ethersproject/units'
 import { Currency, Fetcher, CurrencyAmount, JSBI, Token, TokenAmount,TradeType, Trade, Route, ETHER, WETH, ChainId, Pair } from '@pancakeswap/sdk'
 import { useTradeExactIn, useTradeExactOut } from './exact';
-import { Web3ReactProvider } from "@web3-react/core";
+import {ethers} from 'ethers'
 
 export enum Field {
     INPUT = 'INPUT',
@@ -82,14 +82,15 @@ export async function useDerivedSwapInfo(
     inputCurrency: Currency,
     outputCurrency: Currency,
   ) {
-      
+    if (!parseInt(typedValue)) return;       
     const chainId = 97;
     const parsedAmount = tryParseAmount(typedValue, inputCurrency?? undefined)
-    
+    const bscProvider = new ethers.providers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545/', { name: 'binance', chainId });
     const pair = await 
       Fetcher.fetchPairData(
         wrappedCurrency(inputCurrency, chainId) as Token, 
         wrappedCurrency(outputCurrency, chainId) as Token,
+        bscProvider
         );
     const route = new Route([pair], inputCurrency);
 
@@ -99,7 +100,11 @@ export async function useDerivedSwapInfo(
       TradeType.EXACT_INPUT
     );
 
-    console.log(trade?.executionPrice?.toSignificant(6), parsedAmount);
+    console.log(trade.executionPrice.toSignificant(6), trade.nextMidPrice.toSignificant(6));
+
+    return {
+      v2Trade: trade ?? undefined,
+    }
 
     // const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
     // const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
@@ -168,9 +173,6 @@ export async function useDerivedSwapInfo(
     //   inputError = 'Insufficient balance'
     // }
   
-    return {
-      v2Trade: trade ?? undefined,
-    }
   }
 
 export function useCurrency (value: string) {

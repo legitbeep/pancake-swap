@@ -28,11 +28,11 @@ const Exchange = () => {
         return (data: string) => {
             if (!isOutCoin) {
                 // estimate out
-                useDerivedSwapInfo(inVal,testnetTokens[inCoin],testnetTokens[outCoin]);
+                useDerivedSwapInfo(data,testnetTokens[inCoin],testnetTokens[outCoin]);
                 setEstimated([false,true]);
             } else {
                 // estimate in
-                useDerivedSwapInfo(outVal,testnetTokens[outCoin],testnetTokens[inCoin]);
+                useDerivedSwapInfo(data,testnetTokens[outCoin],testnetTokens[inCoin]);
                 setEstimated([true,false]);
             }
         }
