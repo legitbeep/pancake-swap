@@ -9,7 +9,7 @@ import { useWeb3React } from '@web3-react/core';
 import CustomInput from 'components/input';
 import CustomModal from 'components/modal';
 import { mainnetTokens, testnetTokens } from 'utils/constants/tokens';
-import { useTrade } from 'hooks/index';
+import { useTrade, useDerivedSwapInfo } from 'hooks/index';
 
 const tokens = testnetTokens;
 
@@ -28,15 +28,11 @@ const Exchange = () => {
         return (data: string) => {
             if (!isOutCoin) {
                 // estimate out
-                console.log(
-                useTrade(tokens[inCoin], tokens[outCoin], data,true)
-                )
+                useDerivedSwapInfo(inVal,testnetTokens[inCoin],testnetTokens[outCoin]);
                 setEstimated([false,true]);
             } else {
                 // estimate in
-                console.log(
-                useTrade(tokens[inCoin], tokens[outCoin], data,false)
-                )
+                useDerivedSwapInfo(outVal,testnetTokens[outCoin],testnetTokens[inCoin]);
                 setEstimated([true,false]);
             }
         }

@@ -2,8 +2,9 @@ import { useState, useEffect, useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { formatEther } from "@ethersproject/units";
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Token, TokenAmount,TradeType, Trade, Route, ETHER, WETH, ChainId, Pair } from '@pancakeswap/sdk'
-import { useAllCommonPairs, useTradeExactIn, useTradeExactOut } from './exact';
+import { Currency, Fetcher, CurrencyAmount, JSBI, Token, TokenAmount,TradeType, Trade, Route, ETHER, WETH, ChainId, Pair } from '@pancakeswap/sdk'
+import { useTradeExactIn, useTradeExactOut } from './exact';
+import { Web3ReactProvider } from "@web3-react/core";
 
 export enum Field {
     INPUT = 'INPUT',
@@ -72,24 +73,42 @@ const tryParseAmount = (value?: string, currency?: Currency): CurrencyAmount | T
     return undefined
   }
 
-export function useDerivedSwapInfo(
-    independentField: Field,
+export function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
+  return chainId && currency === ETHER ? WETH[chainId] : currency instanceof Token ? currency : undefined
+}
+
+export async function useDerivedSwapInfo(
     typedValue: string,
     inputCurrency: Currency,
     outputCurrency: Currency,
   ) {
       
-    const isExactIn: boolean = independentField === Field.INPUT
-    const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
+    const chainId = 97;
+    const parsedAmount = tryParseAmount(typedValue, inputCurrency?? undefined)
     
-    const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
-    const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
-    
-    const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+    const pair = await 
+      Fetcher.fetchPairData(
+        wrappedCurrency(inputCurrency, chainId) as Token, 
+        wrappedCurrency(outputCurrency, chainId) as Token,
+        );
+    const route = new Route([pair], inputCurrency);
 
-    console.log({
-      v2Trade: v2Trade?.executionPrice?.toSignificant(6) ?? undefined
-    })
+    const trade = new Trade(
+      route,
+      parsedAmount as CurrencyAmount,
+      TradeType.EXACT_INPUT
+    );
+
+    console.log(trade?.executionPrice?.toSignificant(6), parsedAmount);
+
+    // const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
+    // const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
+    
+    // const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+
+    // console.log({
+    //   v2Trade: v2Trade?.executionPrice?.toSignificant(6) ?? undefined
+    // })
   
     // const { account } = useWeb3React()
     //const recipientLookup = useENS(recipient ?? undefined)
@@ -150,14 +169,9 @@ export function useDerivedSwapInfo(
     // }
   
     return {
-      v2Trade: v2Trade ?? undefined,
+      v2Trade: trade ?? undefined,
     }
   }
-
-  
-export function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
-  return chainId && currency === ETHER ? WETH[chainId] : currency instanceof Token ? currency : undefined
-}
 
 export function useCurrency (value: string) {
 

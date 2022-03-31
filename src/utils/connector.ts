@@ -17,7 +17,7 @@ export const connectorsByName = {
   }
   
 export const getLibrary = (provider: any) => {
-  const library = new Web3(provider)
+  const library = new Web3Provider(provider)
   // library.pollingInterval = POLLING_INTERVAL
   return library
 }
