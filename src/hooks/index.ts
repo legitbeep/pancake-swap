@@ -82,10 +82,11 @@ export async function useDerivedSwapInfo(
     inputCurrency: Currency,
     outputCurrency: Currency,
   ) {
-    if (!parseInt(typedValue)) return;       
-    const chainId = 97;
+    if (!parseInt(typedValue)) return;
+    const [a,b] = useState();       
+    const {chainId} = useWeb3React();
     const parsedAmount = tryParseAmount(typedValue, inputCurrency?? undefined)
-    const bscProvider = new ethers.providers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545/', { name: 'binance', chainId });
+    const bscProvider = new ethers.providers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545/', { name: 'binance', chainId: chainId ?? 97 });
     const pair = await 
       Fetcher.fetchPairData(
         wrappedCurrency(inputCurrency, chainId) as Token, 
