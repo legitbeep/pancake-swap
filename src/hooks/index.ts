@@ -4,7 +4,7 @@ import { formatEther } from "@ethersproject/units";
 import { parseUnits } from '@ethersproject/units'
 import { Currency, Fetcher, CurrencyAmount, JSBI, Token, TokenAmount,TradeType, Trade, Route, ETHER, WETH, ChainId, Pair } from '@pancakeswap/sdk'
 import { useTradeExactIn, useTradeExactOut } from './exact';
-import {ethers} from 'ethers'
+import {Contract, ethers} from 'ethers'
 
 export enum Field {
     INPUT = 'INPUT',
@@ -79,33 +79,61 @@ export function wrappedCurrency(currency: Currency | undefined, chainId: ChainId
 
 export async function useDerivedSwapInfo(
     typedValue: string,
-    inputCurrency: Currency,
-    outputCurrency: Currency,
+    inputCurrency: string,
+    outputCurrency: string,
+    router: Contract,
+    addresses: any
   ) {
     if (!parseInt(typedValue)) return;
-    const [a,b] = useState();       
-    const {chainId} = useWeb3React();
-    const parsedAmount = tryParseAmount(typedValue, inputCurrency?? undefined)
-    const bscProvider = new ethers.providers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545/', { name: 'binance', chainId: chainId ?? 97 });
-    const pair = await 
-      Fetcher.fetchPairData(
-        wrappedCurrency(inputCurrency, chainId) as Token, 
-        wrappedCurrency(outputCurrency, chainId) as Token,
-        bscProvider
-        );
-    const route = new Route([pair], inputCurrency);
 
-    const trade = new Trade(
-      route,
-      parsedAmount as CurrencyAmount,
-      TradeType.EXACT_INPUT
-    );
-
-    console.log(trade.executionPrice.toSignificant(6), trade.nextMidPrice.toSignificant(6));
-
-    return {
-      v2Trade: trade ?? undefined,
+    if(outputCurrency === addresses.WBNB) {
+      let temp = outputCurrency;
+      outputCurrency = inputCurrency;
+      inputCurrency = temp;
     }
+  
+    //The quote currency is not WBNB
+    if(typeof inputCurrency === 'undefined') {
+      return;
+    }
+  
+    //We buy for 0.1 BNB of the new token
+    //ethers was originally created for Ethereum, both also work for BSC
+    //'ether' === 'bnb' on BSC
+    const amountIn = ethers.utils.parseUnits(typedValue, 'ether');
+    const amounts = await router.getAmountsOut(amountIn, [inputCurrency, outputCurrency]);
+    //Our execution price will be a bit different, we need some flexbility
+    const amountOutMin = amounts[1].sub(amounts[1].div(10));
+    console.log(`
+      Buying new token
+      =================
+      inputCurrency: ${amountIn.toString()} ${inputCurrency} (WBNB)
+      outputCurrency: ${amountOutMin.toString()} ${outputCurrency}
+    `);
+
+    // const [a,b] = useState();       
+    // const {chainId} = useWeb3React();
+    // const parsedAmount = tryParseAmount(typedValue, inputCurrency?? undefined)
+    // const bscProvider = new ethers.providers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545/', { name: 'binance', chainId: chainId ?? 97 });
+    // const pair = await 
+    //   Fetcher.fetchPairData(
+    //     wrappedCurrency(inputCurrency, chainId) as Token, 
+    //     wrappedCurrency(outputCurrency, chainId) as Token,
+    //     bscProvider
+    //     );
+    // const route = new Route([pair], inputCurrency);
+
+    // const trade = new Trade(
+    //   route,
+    //   parsedAmount as CurrencyAmount,
+    //   TradeType.EXACT_INPUT
+    // );
+
+    // console.log(trade.executionPrice.toSignificant(6), trade.nextMidPrice.toSignificant(6));
+
+    // return {
+    //   v2Trade: trade ?? undefined,
+    // }
 
     // const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
     // const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)

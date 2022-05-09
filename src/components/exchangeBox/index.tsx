@@ -5,6 +5,8 @@ import { IoSettingsSharp } from 'react-icons/io5';
 import { MdHistory } from "react-icons/md"; 
 import { FiArrowDown } from 'react-icons/fi';
 import { useWeb3React } from '@web3-react/core';
+import { Contract } from 'ethers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 import CustomInput from 'components/input';
 import CustomModal from 'components/modal';
@@ -14,7 +16,7 @@ import { useTrade, useDerivedSwapInfo } from 'hooks/index';
 const tokens = testnetTokens;
 
 const Exchange = () => {
-    const { active, account, ...web3React } = useWeb3React(); 
+    const { active, account, library, ...web3React } = useWeb3React(); 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [inVal, setInVal] = useState("");
     const [outVal, setOutVal] = useState("");
@@ -24,15 +26,45 @@ const Exchange = () => {
 
     const [estimated, setEstimated] = useState([false,false]);
     
+    
+const addresses = {
+    WBNB: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',
+    factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+    router: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
+    recipient: 'recipient of the profit here'
+}
+
+const factory = new Contract(
+    addresses.factory,
+    ['event PairCreated(address indexed token0, address indexed token1, address pair, uint)'],
+    library ? library.getSinger() : undefined
+  );
+const router = new Contract(
+    addresses.router,
+    [
+      'function getAmountsOut(uint amountIn, address[] memory path) public view returns (uint[] memory amounts)',
+      'function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)'
+    ],
+    library ? library.getSinger() : undefined
+  );
+  
+  const wbnb = new Contract(
+    addresses.WBNB,
+    [
+      'function approve(address spender, uint amount) public returns(bool)',
+    ],
+    library ? library.getSinger() : undefined
+  );
+
     const estimate = (isOutCoin: number) => {
         return (data: string) => {
             if (!isOutCoin) {
                 // estimate out
-                useDerivedSwapInfo(data,testnetTokens[inCoin],testnetTokens[outCoin]);
+                useDerivedSwapInfo(data,testnetTokens[inCoin].address,testnetTokens[outCoin].address,router,addresses);
                 setEstimated([false,true]);
             } else {
                 // estimate in
-                useDerivedSwapInfo(data,testnetTokens[outCoin],testnetTokens[inCoin]);
+                useDerivedSwapInfo(data,testnetTokens[outCoin].address,testnetTokens[inCoin].address,router,addresses);
                 setEstimated([true,false]);
             }
         }
